@@ -1,4 +1,5 @@
 import re
+import os
 
 from pathlib import Path
 
@@ -29,3 +30,19 @@ def generate_page(from_path: str, template_path: str, dest_path: str) -> None:
     template = re.sub("{{ Content }}", html_doc, template, flags=re.MULTILINE)
 
     Path(dest_path).write_text(template)
+
+def generate_pages_recursive(source_dir_path: str, template_path: str, dest_dir_path: str) -> None:
+    if not os.path.exists(dest_dir_path):
+        os.mkdir(dest_dir_path)
+
+    for filename in os.listdir(source_dir_path):
+        from_path = os.path.join(source_dir_path, filename)
+        dest_path = os.path.join(dest_dir_path, filename)
+        dest_filepath = dest_path[:-2]
+        dest_filepath += "html"
+        print(f" * {from_path} -> {dest_path}")
+        if os.path.isfile(from_path):
+            generate_page(from_path, template_path, dest_filepath)
+        else:
+            generate_pages_recursive(from_path, template_path, dest_path)
+
