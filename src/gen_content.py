@@ -13,7 +13,7 @@ def extract_title(markdown: str) -> str:
     
     raise ValueError("markdown missing title")
 
-def generate_page(from_path: str, template_path: str, dest_path: str) -> None:
+def generate_page(from_path: str, template_path: str, dest_path: str, basepath: str) -> None:
     print("Generating page from {from_path} to {dest_path} using {template_path}")
     
     try:
@@ -24,14 +24,22 @@ def generate_page(from_path: str, template_path: str, dest_path: str) -> None:
 
     html_title = extract_title(content)
     html_doc = markdown_to_html_node(content).to_html()
+    html_doc = re.sub(r'href=\"\/', f'href=\"{basepath}', html_doc) 
+    html_doc = re.sub(r'src=\"\/', f'src=\"{basepath}', html_doc)
     print(html_title, html_doc)
     
+
     template = re.sub("{{ Title }}", html_title, template, flags=re.MULTILINE)
     template = re.sub("{{ Content }}", html_doc, template, flags=re.MULTILINE)
 
     Path(dest_path).write_text(template)
 
-def generate_pages_recursive(source_dir_path: str, template_path: str, dest_dir_path: str) -> None:
+def generate_pages_recursive(
+        source_dir_path: str,
+        template_path: str,
+        dest_dir_path: str,
+        basepath: str
+) -> None:
     if not os.path.exists(dest_dir_path):
         os.mkdir(dest_dir_path)
 
@@ -42,7 +50,7 @@ def generate_pages_recursive(source_dir_path: str, template_path: str, dest_dir_
         dest_filepath += "html"
         print(f" * {from_path} -> {dest_path}")
         if os.path.isfile(from_path):
-            generate_page(from_path, template_path, dest_filepath)
+            generate_page(from_path, template_path, dest_filepath, basepath)
         else:
-            generate_pages_recursive(from_path, template_path, dest_path)
+            generate_pages_recursive(from_path, template_path, dest_path, basepath)
 
