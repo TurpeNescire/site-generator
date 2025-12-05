@@ -29,6 +29,7 @@ def generate_page(from_path: str, template_path: str, dest_path: str, basepath: 
 
     template = re.sub("{{ Title }}", html_title, template, flags=re.MULTILINE)
     template = re.sub("{{ Content }}", html_doc, template, flags=re.MULTILINE)
+    template = re.sub(r'href=\"\/', f'href=\"{basepath}', template)
 
     Path(dest_path).write_text(template)
 
