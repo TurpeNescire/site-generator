@@ -14,7 +14,7 @@ def extract_title(markdown: str) -> str:
     raise ValueError("markdown missing title")
 
 def generate_page(from_path: str, template_path: str, dest_path: str, basepath: str) -> None:
-    print("Generating page from {from_path} to {dest_path} using {template_path}")
+    print(f"Generating page from {from_path} to {dest_path} using {template_path}")
     
     try:
         content = Path(from_path).read_text()
@@ -26,8 +26,6 @@ def generate_page(from_path: str, template_path: str, dest_path: str, basepath: 
     html_doc = markdown_to_html_node(content).to_html()
     html_doc = re.sub(r'href=\"\/', f'href=\"{basepath}', html_doc) 
     html_doc = re.sub(r'src=\"\/', f'src=\"{basepath}', html_doc)
-    print(html_title, html_doc)
-    
 
     template = re.sub("{{ Title }}", html_title, template, flags=re.MULTILINE)
     template = re.sub("{{ Content }}", html_doc, template, flags=re.MULTILINE)

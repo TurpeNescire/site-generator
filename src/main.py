@@ -23,12 +23,8 @@ def main():
 
     print("Copying static files to public directory...")
     copy_files_recursive(dir_path_static, dir_path_public)
-
-    
-    print(
-        f"Generating HTML from '{from_path}' using "
-        f"'{template_path}', writing to '{to_path}'"
-    )
+ 
+    print(f"Generating HTML from '{from_path}' using '{template_path}', writing to '{to_path}'")
     generate_pages_recursive(from_path, template_path, to_path, basepath)
     
 
