@@ -22,6 +22,7 @@ def generate_page(from_path: str, template_path: str, dest_path: str, basepath: 
     except Exception as e:
         print(f"error: reading contents from {from_path}: {e}")
 
+    template = re.sub(r'href=\"\/', f'href=\"{basepath}', template)
     html_title = extract_title(content)
     html_doc = markdown_to_html_node(content).to_html()
     html_doc = re.sub(r'href=\"\/', f'href=\"{basepath}', html_doc) 
@@ -29,7 +30,6 @@ def generate_page(from_path: str, template_path: str, dest_path: str, basepath: 
 
     template = re.sub("{{ Title }}", html_title, template, flags=re.MULTILINE)
     template = re.sub("{{ Content }}", html_doc, template, flags=re.MULTILINE)
-    template = re.sub(r'href=\"\/', f'href=\"{basepath}', template)
 
     Path(dest_path).write_text(template)
 
